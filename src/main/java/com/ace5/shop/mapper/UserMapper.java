@@ -2,6 +2,7 @@ package com.ace5.shop.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import com.ace5.shop.dto.AuthResponse;
@@ -12,7 +13,7 @@ import com.ace5.shop.entity.User;
 public interface UserMapper {
 
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "email", expression = "java(normalizeEmail(request.email()))")
+	@Mapping(target = "email", source = "email", qualifiedByName = "normalizeEmail")
 	@Mapping(target = "password", ignore = true)
 	@Mapping(target = "role", constant = "USER")
 	@Mapping(target = "deleted", ignore = true)
@@ -26,6 +27,7 @@ public interface UserMapper {
 	@Mapping(target = "role", source = "user.role")
 	AuthResponse toAuthResponse(User user, String token);
 
+	@Named("normalizeEmail")
 	default String normalizeEmail(String email) {
 		return email.trim().toLowerCase();
 	}
